@@ -60,9 +60,9 @@ pipeline {
                                     --exclude "README.md"
 
                                 echo "Deployment complete ✓"
-                                BUCKET_NAME="${S3_BUCKET}"
-                                REGION="${AWS_REGION}"
-                                echo "Website URL: http://${BUCKET_NAME}.s3-website-${REGION}.amazonaws.com"
+                                # BUCKET_NAME="${S3_BUCKET}"
+                                # REGION="${AWS_REGION}"
+                                # echo "Website URL: http://${BUCKET_NAME}.s3-website-${REGION}.amazonaws.com"
                             '''
                         }
 
