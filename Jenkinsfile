@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        GITHUB_REPO = 'https://github.com/markd-sp/conjurjenkinsdemo.git'
-    }
-
     stages {
 
         stage('Retrieve Secrets from Conjur') {
@@ -41,12 +37,6 @@ pipeline {
                             '''
                         }
 
-                        stage('Checkout Repo') {
-                            sh '''
-                                git clone ${GITHUB_REPO} "${WORKSPACE}/repo"
-                            '''
-                        }
-
                         stage('Deploy to S3') {
                             sh '''
                                 set +x
@@ -54,7 +44,8 @@ pipeline {
                                 export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_KEY}"
                                 export AWS_DEFAULT_REGION="${AWS_REGION}"
 
-                                aws s3 sync "${WORKSPACE}/repo/" s3://${S3_BUCKET}/ \
+                                # Deploy directly from workspace
+                                aws s3 sync "${WORKSPACE}/" s3://${S3_BUCKET}/ \
                                     --exclude ".git/*" \
                                     --exclude "Jenkinsfile" \
                                     --exclude "README.md"
@@ -72,9 +63,6 @@ pipeline {
 
     post {
         always {
-            sh '''
-                rm -rf "${WORKSPACE}/repo"
-            '''
             cleanWs()
             echo "Cleanup complete ✓"
         }
